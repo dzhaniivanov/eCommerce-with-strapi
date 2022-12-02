@@ -1,68 +1,11 @@
-import { useEffect } from "react";
-import { useState } from "react";
 import Card from "../Card/Card";
 import "./FeaturedProducts.scss";
-import axios from "axios";
+import useFetch from "../../hooks/useFetch";
 
 const FeaturedProducts = ({ type }) => {
-  const data = [
-    {
-      id: 1,
-      img: "https://images.unsplash.com/photo-1554568218-0f1715e72254?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OHx8dCUyMHNoaXJ0fGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60:",
-      title: "Long Sleeve Graphic T-shirt",
-      isNew: true,
-      oldPrice: 19,
-      price: 12,
-    },
-    {
-      id: 2,
-      img: "https://images.unsplash.com/photo-1554568218-0f1715e72254?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OHx8dCUyMHNoaXJ0fGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60:",
-      img2: "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
-      title: "Long Sleeve Graphic T-shirt",
-      isNew: true,
-      oldPrice: 19,
-      price: 12,
-    },
-    {
-      id: 3,
-      img: "https://images.unsplash.com/photo-1554568218-0f1715e72254?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OHx8dCUyMHNoaXJ0fGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60:",
-      title: "Long Sleeve Graphic T-shirt",
-      isNew: false,
-      oldPrice: 19,
-      price: 12,
-    },
-    {
-      id: 4,
-      img: "https://images.unsplash.com/photo-1554568218-0f1715e72254?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OHx8dCUyMHNoaXJ0fGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60:",
-      img2: "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
-      title: "Long Sleeve Graphic T-shirt",
-      isNew: false,
-      oldPrice: 19,
-      price: 12,
-    },
-  ];
-
-  const [products, setProducts] = useState([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await axios.get(
-          process.env.REACT_APP_API_URL + "/products",
-          {
-            headers: {
-              Authorization: "bearer " + process.env.REACT_APP_API_TOKEN,
-            },
-          }
-        );
-        console.log(data)
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchData();
-  }, []);
+  const { data, loading, error } = useFetch(
+    `/products?populate=*&[filters][type][$eq]=${type}`
+  );
 
   return (
     <div className="featuredProducts">
@@ -76,9 +19,11 @@ const FeaturedProducts = ({ type }) => {
         </p>
       </div>
       <div className="bottom">
-        {data.map((item) => (
-          <Card item={item} key={item.id} />
-        ))}
+        {error
+          ? "Something went wrong..."
+          : loading
+          ? "Loading"
+          : data.map((item) => <Card item={item} key={item.id} />)}
       </div>
     </div>
   );
