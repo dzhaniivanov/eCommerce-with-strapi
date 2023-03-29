@@ -8,6 +8,7 @@ import "./Navbar.scss";
 import { useState } from "react";
 import Cart from "../Cart/Cart";
 import { useSelector } from "react-redux";
+import React from "react";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
